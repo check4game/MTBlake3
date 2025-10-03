@@ -5,6 +5,34 @@ CPU Usage: SGL,  1 Threads | 8%
 CPU Usage: TBB, 16 Threads | 100%
 CPU Usage: TBB,  2 Threads | 16%
 CPU Usage: OMP,  2 Threads | 16%
+
+TBB 16 Threads
+
+        oneapi::tbb::parallel_invoke(
+            [=]() {
+                *l_n = blake3_compress_subtree_wide(
+                    l_input, l_input_len, key, l_chunk_counter, flags, l_cvs, use_tbb);
+            },
+            [=]() {
+                *r_n = blake3_compress_subtree_wide(
+                    r_input, r_input_len, key, r_chunk_counter, flags, r_cvs, use_tbb);
+            });
+
+
+oneapi::tbb::task_arena light_arena(2);
+
+        light_arena.execute([&]() {
+            oneapi::tbb::parallel_invoke(
+                [=]() {
+                    *l_n = blake3_compress_subtree_wide(
+                        l_input, l_input_len, key, l_chunk_counter, flags, l_cvs, use_tbb);
+                },
+                [=]() {
+                    *r_n = blake3_compress_subtree_wide(
+                        r_input, r_input_len, key, r_chunk_counter, flags, r_cvs, use_tbb);
+                });
+            });
+
 ```
 
 ```

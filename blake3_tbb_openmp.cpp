@@ -20,7 +20,8 @@ static_assert(TBB_USE_EXCEPTIONS == 0,
 extern "C" int mt_selector = 0;
 
 #if defined(BLAKE3_USE_TBB)
-    oneapi::tbb::task_arena light_arena(2);
+    oneapi::tbb::task_arena light_arena2(2);
+    oneapi::tbb::task_arena light_arena4(4);
 #endif
 
     extern "C" int tbb_max_concurrency()
@@ -41,10 +42,31 @@ extern "C" int mt_selector = 0;
         }
         else if (mt_selector == 2)
         {
-            //oneapi::tbb::task_arena light_arena(2);
-            max_concurrency = 2;
+            light_arena2.execute([&]() {
+                oneapi::tbb::parallel_invoke(
+                    [&]() {
+                        max_concurrency = oneapi::tbb::this_task_arena::max_concurrency();
+                    },
+                    [&]() {
+                        //max_concurrency = oneapi::tbb::this_task_arena::max_concurrency();
+                    }
+                );
+            });
         }
         else if (mt_selector == 3)
+        {
+            light_arena4.execute([&]() {
+                oneapi::tbb::parallel_invoke(
+                    [&]() {
+                        max_concurrency = oneapi::tbb::this_task_arena::max_concurrency();
+                    },
+                    [&]() {
+                        //max_concurrency = oneapi::tbb::this_task_arena::max_concurrency();
+                    }
+                );
+                });
+        }
+        else if (mt_selector == 4)
         {
             max_concurrency = 2;
         }
@@ -84,7 +106,21 @@ extern "C" void blake3_compress_subtree_wide_join_tbb(
     }
     else if (mt_selector==2)
     {
-        light_arena.execute([&]() {
+        light_arena2.execute([&]() {
+            oneapi::tbb::parallel_invoke(
+                [=]() {
+                    *l_n = blake3_compress_subtree_wide(
+                        l_input, l_input_len, key, l_chunk_counter, flags, l_cvs, use_tbb);
+                },
+                [=]() {
+                    *r_n = blake3_compress_subtree_wide(
+                        r_input, r_input_len, key, r_chunk_counter, flags, r_cvs, use_tbb);
+                });
+            });
+    }
+    else if (mt_selector==3)
+    {
+        light_arena4.execute([&]() {
             oneapi::tbb::parallel_invoke(
                 [=]() {
                     *l_n = blake3_compress_subtree_wide(
@@ -97,8 +133,10 @@ extern "C" void blake3_compress_subtree_wide_join_tbb(
             });
     }
 #if defined(_OPENMP)
-    else if (mt_selector == 3)
+    else if (mt_selector==4)
     {
+        omp_set_max_active_levels(2);
+
 #pragma omp parallel sections num_threads(2)
         {
 #pragma omp section

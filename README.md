@@ -1,4 +1,4 @@
-Intel i7-10700K 8C/16
+Intel i7-10700K 8C/16, oneapi-tbb-2022.1.0
 
 ```
 CPU Usage: SGL,  1 Threads | 8%

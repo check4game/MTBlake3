@@ -1,0 +1,57 @@
+Z:\work\MZ\MTBlake3\x64\Release>MTBlake3.exe D:\temp\test3mix.1CD
+
+v1.2, fileSize: 14461091840, readSize: 1048576, D:\temp\test3mix.1CD
+SGL,    1T, Time:  4.992 sec, CPU:   6.73%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+TBB,   16T, Time:  3.100 sec, CPU:  99.65%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+TBB,    2T, Time:  3.882 sec, CPU:  12.96%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+TBB,    4T, Time:  3.063 sec, CPU:  25.53%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+OMP, 2L|2T, Time:  3.077 sec, CPU:  25.30%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+OMP, 3L|2T, Time:  2.995 sec, CPU:  50.18%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+
+v1.2, fileSize: 14461091840, readSize: 2097152, D:\temp\test3mix.1CD
+SGL,    1T, Time:  5.027 sec, CPU:   6.48%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+TBB,   16T, Time:  3.087 sec, CPU:  99.62%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+TBB,    2T, Time:  3.854 sec, CPU:  12.83%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+TBB,    4T, Time:  3.077 sec, CPU:  25.38%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+OMP, 2L|2T, Time:  3.064 sec, CPU:  25.19%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+OMP, 3L|2T, Time:  2.952 sec, CPU:  50.34%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+
+v1.2, fileSize: 14461091840, readSize: 4194304, D:\temp\test3mix.1CD
+SGL,    1T, Time:  5.057 sec, CPU:   6.61%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+TBB,   16T, Time:  3.083 sec, CPU:  99.71%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+TBB,    2T, Time:  3.871 sec, CPU:  13.14%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+TBB,    4T, Time:  3.050 sec, CPU:  25.46%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+OMP, 2L|2T, Time:  3.389 sec, CPU:  25.28%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+OMP, 3L|2T, Time:  2.914 sec, CPU:  50.17%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+
+v1.2, fileSize: 14461091840, readSize: 8388608, D:\temp\test3mix.1CD
+SGL,    1T, Time:  5.215 sec, CPU:   6.43%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+TBB,   16T, Time:  3.018 sec, CPU:  76.41%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+TBB,    2T, Time:  3.971 sec, CPU:  12.28%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+TBB,    4T, Time:  3.138 sec, CPU:  23.16%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+OMP, 2L|2T, Time:  3.298 sec, CPU:  25.26%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+OMP, 3L|2T, Time:  3.076 sec, CPU:  50.06%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+
+v1.2, fileSize: 14461091840, readSize: 16777216, D:\temp\test3mix.1CD
+SGL,    1T, Time:  5.544 sec, CPU:   6.53%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+TBB,   16T, Time:  3.089 sec, CPU:  46.41%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+TBB,    2T, Time:  4.302 sec, CPU:  10.40%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+TBB,    4T, Time:  3.427 sec, CPU:  17.28%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+OMP, 2L|2T, Time:  3.423 sec, CPU:  25.37%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+OMP, 3L|2T, Time:  3.154 sec, CPU:  50.24%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+
+v1.2, fileSize: 14461091840, readSize: 33554432, D:\temp\test3mix.1CD
+SGL,    1T, Time:  5.753 sec, CPU:   6.73%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+TBB,   16T, Time:  3.154 sec, CPU:  30.75%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+TBB,    2T, Time:  4.421 sec, CPU:   9.74%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+TBB,    4T, Time:  3.530 sec, CPU:  13.35%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+OMP, 2L|2T, Time:  3.509 sec, CPU:  25.09%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+OMP, 3L|2T, Time:  3.271 sec, CPU:  49.98%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+
+v1.2, fileSize: 14461091840, readSize: 67108864, D:\temp\test3mix.1CD
+SGL,    1T, Time:  5.846 sec, CPU:   6.57%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+TBB,   16T, Time:  3.181 sec, CPU:  23.87%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+TBB,    2T, Time:  4.448 sec, CPU:   9.26%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+TBB,    4T, Time:  3.588 sec, CPU:  12.67%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+OMP, 2L|2T, Time:  3.557 sec, CPU:  24.94%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+OMP, 3L|2T, Time:  3.347 sec, CPU:  51.80%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23

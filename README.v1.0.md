@@ -1,5 +1,7 @@
 Intel i7-10700K 8C/16, oneapi-tbb-2022.1.0
 
+https://github.com/check4game/MTBlake3/blob/main/i7-10700K.results.txt
+
 ```
 CPU Usage: SGL,  1 Threads | 8%
 CPU Usage: TBB, 16 Threads | 100%
@@ -54,4 +56,3 @@ OMP 2 Threads
             }
         #endif
 ```
-https://github.com/check4game/MTBlake3/blob/main/i7-10700K.results.txt

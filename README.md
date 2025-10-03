@@ -6,6 +6,8 @@ CPU Usage: TBB, 16 Threads | 100%
 CPU Usage: TBB,  2 Threads | 16%
 CPU Usage: OMP,  2 Threads | 16%
 
+SGL 1 Threads, no TBB or OMP, blake3_hasher_update
+ 
 TBB 16 Threads by default
 
         oneapi::tbb::parallel_invoke(

@@ -51,11 +51,7 @@ OMP 2 Threads
                 }
             }
         #endif
-
-
-
 ```
-
 ```
 Z:\work\MZ\MTBlake3\x64\Release>MTBlake3.exe D:\temp\test3mix.1CD
 

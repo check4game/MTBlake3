@@ -1,5 +1,7 @@
 Intel i7-10700K 8C/16, oneapi-tbb-2022.1.0
 
+https://github.com/check4game/MTBlake3/blob/main/i7-10700K.results.v.1.1.txt
+
 ```
 v1.1, fileSize: 14461091840, sizeof(buf): 2097152, D:\temp\test3mix.1CD
 
@@ -76,4 +78,3 @@ OMP 2 Threads
             }
         #endif
 ```
-https://github.com/check4game/MTBlake3/blob/main/i7-10700K.results.v2.txt

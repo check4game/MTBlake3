@@ -6,7 +6,7 @@ CPU Usage: TBB, 16 Threads | 100%
 CPU Usage: TBB,  2 Threads | 16%
 CPU Usage: OMP,  2 Threads | 16%
 
-TBB 16 Threads
+TBB 16 Threads by default
 
         oneapi::tbb::parallel_invoke(
             [=]() {
@@ -18,8 +18,9 @@ TBB 16 Threads
                     r_input, r_input_len, key, r_chunk_counter, flags, r_cvs, use_tbb);
             });
 
+TBB 2 Threads
 
-oneapi::tbb::task_arena light_arena(2);
+        oneapi::tbb::task_arena light_arena(2);
 
         light_arena.execute([&]() {
             oneapi::tbb::parallel_invoke(
@@ -32,6 +33,26 @@ oneapi::tbb::task_arena light_arena(2);
                         r_input, r_input_len, key, r_chunk_counter, flags, r_cvs, use_tbb);
                 });
             });
+
+OMP 2 Threads
+        #pragma omp parallel sections num_threads(2)
+                {
+        #pragma omp section
+                    {
+                        *l_n = blake3_compress_subtree_wide(
+                            l_input, l_input_len, key, l_chunk_counter, flags, l_cvs, use_tbb);
+                    }
+        
+        #pragma omp section
+                    {
+                        *r_n = blake3_compress_subtree_wide(
+                            r_input, r_input_len, key, r_chunk_counter, flags, r_cvs, use_tbb);
+                    }
+                }
+            }
+        #endif
+
+
 
 ```
 

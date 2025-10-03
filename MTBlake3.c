@@ -92,7 +92,7 @@ static int TEST(char * file, int mt)
 
 	printf(", %2d Threads, ", tbb_max_concurrency());
 
-	printf("Time: %.6f sec, %llu, Hash: ", elapsed, file_size);
+	printf("Time: %.6f sec, Size: %llu, Hash: ", elapsed, file_size);
 
 	// Print the hash as hexadecimal.
 	for (size_t i = 0; i < BLAKE3_OUT_LEN; i++) {

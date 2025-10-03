@@ -1,3 +1,5 @@
+Intel i7-10700K 8C/16
+
 ```
 CPU Usage: SGL,  1 Threads | 8%
 CPU Usage: TBB, 16 Threads | 100%

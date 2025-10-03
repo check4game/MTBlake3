@@ -6,11 +6,13 @@
 #include <fcntl.h>
 #include <time.h>
 
+#include <windows.h>
+
 extern int mt_selector;
 
 extern int tbb_max_concurrency();
 
-static unsigned char buf[128 * 1024];
+static unsigned char buf[2 * 1024 * 1024];
 
 static int TEST(char * file, int mt)
 {
@@ -18,7 +20,7 @@ static int TEST(char * file, int mt)
 	mt = 0;
 #endif
 
-	if (mt < 0 || mt > 3) mt = 0;
+	if (mt < 0 || mt > 4) mt = 0;
 
 	mt_selector = mt;
 
@@ -35,12 +37,9 @@ static int TEST(char * file, int mt)
 
 	clock_t start = clock();
 
-	size_t file_size = 0;
 	while (1)
 	{
 		size_t n = read(fn, buf, sizeof(buf));
-
-		file_size += n;
 
 		if (n > 0)
 		{
@@ -69,6 +68,14 @@ static int TEST(char * file, int mt)
 	// Finalize the hash. BLAKE3_OUT_LEN is the default output length, 32 bytes.
 	uint8_t output[BLAKE3_OUT_LEN];
 	blake3_hasher_finalize(&hasher, output, BLAKE3_OUT_LEN);
+
+	FILETIME idleTime2, kernelTime2, userTime2;
+
+	if (!GetSystemTimes(&idleTime2, &kernelTime2, &userTime2))
+	{
+		fprintf(stderr, "GetSystemTimes failed: %s\n", strerror(errno)); return errno;
+	}
+
 	clock_t end = clock();
 
 	double elapsed = ((double)(end - start)) / CLOCKS_PER_SEC;
@@ -87,18 +94,24 @@ static int TEST(char * file, int mt)
 	}
 	else if (mt == 3)
 	{
+		printf("TBB");
+	}
+	else if (mt == 4)
+	{
 		printf("OMP");
 	}
 
 	printf(", %2d Threads, ", tbb_max_concurrency());
 
-	printf("Time: %.6f sec, Size: %llu, Hash: ", elapsed, file_size);
+	printf("Time: %.3f sec, Hash: ", elapsed);
 
 	// Print the hash as hexadecimal.
 	for (size_t i = 0; i < BLAKE3_OUT_LEN; i++) {
 		printf("%02x", output[i]);
 	}
 	printf("\n"); return 0;
+
+	Sleep(1000);
 }
 
 int main(int argc, char** argv)
@@ -112,12 +125,16 @@ int main(int argc, char** argv)
 
 	if (fn < 0)
 	{
-		fprintf(stderr, "open failed: %s\n", strerror(errno)); return 0;
+		fprintf(stderr, "open failed: %s\n", strerror(errno)); return errno;
 	}
+
+	long long fileSize = _filelengthi64(fn);
+
+	printf("v1.1, fileSize: %lld, sizeof(buf): %lld, %s\n", fileSize, sizeof(buf), argv[1]);
 
 	_close(fn);
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		TEST(argv[1], i);
 		TEST(argv[1], i);

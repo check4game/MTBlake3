@@ -8,17 +8,127 @@
 
 #include <windows.h>
 
+#include <omp.h>
+
+#include <pdh.h>
+#include <pdhmsg.h>
+
+#pragma comment(lib, "pdh.lib")
+
+typedef struct {
+	PDH_HQUERY query;
+	PDH_HCOUNTER cpuCounter;
+	DWORD processId;
+} SELF_MONITOR;
+
+static SELF_MONITOR monitor;
+
+static const char* GetPdhErrorString(PDH_STATUS status) {
+	switch (status) {
+	case ERROR_SUCCESS: return "Success";
+	case PDH_CSTATUS_NO_OBJECT: return "Object not found";
+	case PDH_CSTATUS_NO_COUNTER: return "Counter not found";
+	case PDH_CSTATUS_NO_INSTANCE: return "Instance not found";
+	case PDH_INVALID_DATA: return "Invalid data";
+	case PDH_NO_DATA: return "No data available";
+	case PDH_MORE_DATA: return "More data available";
+	default: return "Unknown error";
+	}
+}
+
+static int InitializeSelfMonitor(SELF_MONITOR* monitor) {
+	PDH_STATUS status;
+
+	// Получаем ID текущего процесса
+	monitor->processId = GetCurrentProcessId();
+
+	status = PdhOpenQuery(NULL, 0, &monitor->query);
+	if (status != ERROR_SUCCESS)
+	{
+		printf("PdhOpenQuery: %s\n", GetPdhErrorString(status));
+		return 0;
+	}
+
+	
+#if 0
+	WCHAR counterPath[1024] = { 0 };
+	swprintf(counterPath, 1024, L"\\Process(%d)\\% Processor Time", monitor->processId);
+	status = PdhAddCounter(monitor->query, counterPath, 0, &monitor->cpuCounter);
+#endif
+
+	status = PdhAddCounter(monitor->query, L"\\Processor(_Total)\\% Processor Time", 0, &monitor->cpuCounter);
+	//status = PdhAddCounter(monitor->query, L"\\Process(MTBlake3)\\% Processor Time", 0, &monitor->cpuCounter);
+
+	if (status != ERROR_SUCCESS)
+	{
+		printf("PdhAddCounter: 0x%X, %s\n", status, GetPdhErrorString(status));
+		PdhCloseQuery(monitor->query);
+		return 0;
+	}
+
+	// Инициализируем сбор данных
+	PdhCollectQueryData(monitor->query);
+
+	return 1;
+}
+
+static double GetSelfCPUUsage(SELF_MONITOR* monitor, int sleep)
+{
+	PDH_STATUS status = ERROR_SUCCESS;
+
+	if (sleep > 0)
+	{
+		Sleep(sleep);
+	}
+
+	status = PdhCollectQueryData(monitor->query);
+
+	if (status != ERROR_SUCCESS)
+	{
+		printf("PdhCollectQueryData: %s\n", GetPdhErrorString(status));
+		return -1.0;
+	}
+	
+	PDH_FMT_COUNTERVALUE value;
+	status = PdhGetFormattedCounterValue(monitor->cpuCounter, PDH_FMT_DOUBLE, NULL, &value);
+
+	if (status == ERROR_SUCCESS)
+	{
+		return value.doubleValue;
+	}
+
+	printf("PdhGetFormattedCounterValue: %s\n", GetPdhErrorString(status));
+	return -1.0;
+}
+
+static void CloseSelfMonitor(SELF_MONITOR* monitor)
+{
+	if (monitor->query)
+	{
+		PdhCloseQuery(monitor->query);
+	}
+}
+
+//------------------------------------------
+
 extern int mt_selector;
 
 extern int tbb_max_concurrency();
 
-static unsigned char buf[2 * 1024 * 1024];
+static unsigned char buf[64 * 1024 * 1024];
 
-static int TEST(char * file, int mt)
+static int TEST(char * file, int mt, int readSizeKB)
 {
 #if !defined(BLAKE3_USE_TBB)
 	mt = 0;
 #endif
+
+	if (readSizeKB < 128 || readSizeKB > (sizeof(buf) / 1024))
+	{
+		readSizeKB = 2048;
+	}
+
+	int readSize = readSizeKB * 1024;
 
 	if (mt < 0 || mt > 4) mt = 0;
 
@@ -31,6 +141,8 @@ static int TEST(char * file, int mt)
 		fprintf(stderr, "open failed: %s\n", strerror(errno)); return 0;
 	}
 
+	double cpu_before = GetSelfCPUUsage(&monitor, 3000);
+
 	// Initialize the hasher.
 	blake3_hasher hasher;
 	blake3_hasher_init(&hasher);
@@ -39,7 +151,7 @@ static int TEST(char * file, int mt)
 
 	while (1)
 	{
-		size_t n = read(fn, buf, sizeof(buf));
+		size_t n = read(fn, buf, readSize);
 
 		if (n > 0)
 		{
@@ -80,6 +192,8 @@ static int TEST(char * file, int mt)
 
 	double elapsed = ((double)(end - start)) / CLOCKS_PER_SEC;
 
+	double cpu_after = GetSelfCPUUsage(&monitor, 0);
+
 	if (!mt)
 	{
 		printf("SGL");
@@ -101,17 +215,22 @@ static int TEST(char * file, int mt)
 		printf("OMP");
 	}
 
-	printf(", %2d Threads, ", tbb_max_concurrency());
+	if (mt < 4)
+	{
+		printf(",   %2dT, ", tbb_max_concurrency());
+	}
+	else
+	{
+		printf(", %dL|%dT, ", omp_get_max_active_levels(), omp_get_max_threads());
+	}
 
-	printf("Time: %.3f sec, Hash: ", elapsed);
+	printf("Time: %6.3f sec, CPU: %6.2f%%, Hash: ", elapsed, cpu_after);
 
 	// Print the hash as hexadecimal.
 	for (size_t i = 0; i < BLAKE3_OUT_LEN; i++) {
 		printf("%02x", output[i]);
 	}
 	printf("\n"); return 0;
-
-	Sleep(1000);
 }
 
 int main(int argc, char** argv)
@@ -130,15 +249,32 @@ int main(int argc, char** argv)
 
 	long long fileSize = _filelengthi64(fn);
 
-	printf("v1.1, fileSize: %lld, sizeof(buf): %lld, %s\n", fileSize, sizeof(buf), argv[1]);
-
 	_close(fn);
 
-	for (int i = 0; i < 5; i++)
-	{
-		TEST(argv[1], i);
-		TEST(argv[1], i);
-		TEST(argv[1], i);
-		printf("\n");
+	if (!InitializeSelfMonitor(&monitor)) {
+		return -1;
 	}
+
+	for (int readSizeKB = 1024; readSizeKB <= (sizeof(buf) / 1024); readSizeKB *= 2)
+	{
+		printf("\nv1.2, fileSize: %lld, readSize: %lld, %s\n", fileSize, readSizeKB * 1024LL, argv[1]);
+
+		for (int mt = 0; mt < 4; mt++)
+		{
+			TEST(argv[1], mt, readSizeKB);
+		}
+
+		int omp_num_threads = 2;
+
+		for (int max_active_levels = 2; max_active_levels < 4; max_active_levels++)
+		{
+			omp_set_num_threads(omp_num_threads); omp_set_max_active_levels(max_active_levels);
+
+			TEST(argv[1], 4, readSizeKB);
+		}
+	}
+
+	CloseSelfMonitor(&monitor);
+
+	return 0;
 }

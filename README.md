@@ -1,15 +1,15 @@
 Intel i7-10700K 8C/16, oneapi-tbb-2022.1.0
 
-https://github.com/check4game/MTBlake3/blob/main/i7-10700K.results.v.1.1.txt
+https://github.com/check4game/MTBlake3/blob/main/i7-10700K.results.v.1.2.txt
 
 ```
-v1.1, fileSize: 14461091840, sizeof(buf): 2097152, D:\temp\test3mix.1CD
-
-CPU Usage: SGL,  1 Threads | 10%
-CPU Usage: TBB, 16 Threads | 100%
-CPU Usage: TBB,  2 Threads | 17%
-CPU Usage: TBB,  4 Threads | 32%
-CPU Usage: OMP,  2 Threads | 32%
+v1.2, fileSize: 14461091840, readSize: 2097152, D:\temp\test3mix.1CD
+SGL,    1T, Time:  5.027 sec, CPU:   6.48%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+TBB,   16T, Time:  3.087 sec, CPU:  99.62%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+TBB,    2T, Time:  3.854 sec, CPU:  12.83%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+TBB,    4T, Time:  3.077 sec, CPU:  25.38%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+OMP, 2L|2T, Time:  3.064 sec, CPU:  25.19%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
+OMP, 3L|2T, Time:  2.952 sec, CPU:  50.34%, Hash: df27698036f83e2bdbab0beff6b8351e562bdaceeec14f09554344f08b723f23
 
 SGL 1 Threads, no TBB or OMP, blake3_hasher_update
  
@@ -59,9 +59,9 @@ TBB 4 Threads
 
 OMP 2 Threads
 
-        omp_set_max_active_levels(2);
+        omp_set_num_threads(2); omp_set_max_active_levels(2); // omp_set_max_active_levels(3);
 
-        #pragma omp parallel sections num_threads(2)
+        #pragma omp parallel sections //num_threads(2)
                 {
         #pragma omp section
                     {

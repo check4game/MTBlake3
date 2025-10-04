@@ -135,9 +135,12 @@ extern "C" void blake3_compress_subtree_wide_join_tbb(
 #if defined(_OPENMP)
     else if (mt_selector==4)
     {
-        omp_set_max_active_levels(2);
+        // move to main() function
+        //omp_set_num_threads(2)
+        //omp_set_max_active_levels(2);
+        //omp_set_max_active_levels(3);
 
-#pragma omp parallel sections num_threads(2)
+#pragma omp parallel sections //num_threads(2)
         {
 #pragma omp section
             {
